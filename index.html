@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Play Tic Tac Toe online - a fun and interactive game for all ages. Challenge the computer or play with a friend!">
+    <meta name="keywords" content="tic tac toe, noughts and crosses, XO game, online game, two-player game">
+    <meta name="author" content="Your Name">
+    <title>Tic Tac Toe | Play Online XO Game</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --light-color: #fff;
+            --dark-color: #222;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .game-container {
+            background-color: var(--light-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .player-turn {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .player-turn span {
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+        }
+
+        .scoreboard {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .score {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+            aspect-ratio: 1/1;
+        }
+
+        .cell {
+            background-color: var(--background-color);
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            aspect-ratio: 1/1;
+        }
+
+        .cell:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .cell.x {
+            color: var(--secondary-color);
+        }
+
+        .cell.o {
+            color: var(--accent-color);
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .mode-selector {
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 120px;
+            height: 34px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--primary-color);
+            transition: var(--transition);
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: var(--light-color);
+            transition: var(--transition);
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(86px);
+        }
+
+        .labels {
+            position: absolute;
+            top: 8px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--light-color);
+            transition: var(--transition);
+        }
+
+        .labels:after {
+            content: attr(data-off);
+            position: absolute;
+            right: 15px;
+            opacity: 1;
+            transition: var(--transition);
+        }
+
+        .labels:before {
+            content: attr(data-on);
+            position: absolute;
+            left: 15px;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        input:checked ~ .labels:after {
+            opacity: 0;
+        }
+
+        input:checked ~ .labels:before {
+            opacity: 1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--light-color);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow);
+        }
+
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--light-color);
+            margin-top: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .game-container {
+                padding: 1rem;
+            }
+            
+            .game-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .cell {
+                font-size: 2rem;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+            }
+            
+            .toggle {
+                width: 100px;
+            }
+            
+            input:checked + .slider:before {
+                transform: translateX(66px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-board {
+                gap: 0.5rem;
+            }
+            
+            .game-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .toggle {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tic Tac Toe</h1>
+            <p class="subtitle">The classic X and O game</p>
+        </header>
+        
+        <div class="game-container">
+            <div class="game-info">
+                <div class="player-turn">Player <span id="current-player">X</span>'s turn</div>
+                <div class="scoreboard">
+                    <div class="score" id="player-x">X: 0</div>
+                    <div class="score" id="player-o">O: 0</div>
+                    <div class="score" id="ties">Ties: 0</div>
+                </div>
+            </div>
+            
+            <div class="game-board" id="board">
+                <div class="cell" data-index="0"></div>
+                <div class="cell" data-index="1"></div>
+                <div class="cell" data-index="2"></div>
+                <div class="cell" data-index="3"></div>
+                <div class="cell" data-index="4"></div>
+                <div class="cell" data-index="5"></div>
+                <div class="cell" data-index="6"></div>
+                <div class="cell" data-index="7"></div>
+                <div class="cell" data-index="8"></div>
+            </div>
+            
+            <div class="game-controls">
+                <button id="reset-btn" class="btn">Reset Game</button>
+                <button id="new-game-btn" class="btn">New Game</button>
+                <div class="mode-selector">
+                    <label class="toggle">
+                        <input type="checkbox" id="ai-toggle">
+                        <span class="slider"></span>
+                        <span class="labels" data-on="VS AI" data-off="2 Players"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal" id="result-modal">
+            <div class="modal-content">
+                <h2 id="result-text">X Wins!</h2>
+                <button id="play-again-btn" class="btn">Play Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© <span id="year"></span> Tic Tac Toe Game. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current year in footer
+            document.getElementById('year').textContent = new Date().getFullYear();
+            
+            // Game elements
+            const board = document.getElementById('board');
+            const cells = document.querySelectorAll('.cell');
+            const currentPlayerDisplay = document.getElementById('current-player');
+            const resetBtn = document.getElementById('reset-btn');
+            const newGameBtn = document.getElementById('new-game-btn');
+            const playAgainBtn = document.getElementById('play-again-btn');
+            const resultModal = document.getElementById('result-modal');
+            const resultText = document.getElementById('result-text');
+            const aiToggle = document.getElementById('ai-toggle');
+            
+            // Score elements
+            const playerXScore = document.getElementById('player-x');
+            const playerOScore = document.getElementById('player-o');
+            const tiesScore = document.getElementById('ties');
+            
+            // Game state
+            let boardState = ['', '', '', '', '', '', '', '', ''];
+            let currentPlayer = 'X';
+            let gameActive = true;
+            let scores = { X: 0, O: 0, ties: 0 };
+            let vsAI = false;
+            
+            // Winning conditions
+            const winningConditions = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // columns
+                [0, 4, 8], [2, 4, 6]             // diagonals
+            ];
+            
+            // Initialize the game
+            function initGame() {
+                boardState = ['', '', '', '', '', '', '', '', ''];
+                currentPlayer = 'X';
+                gameActive = true;
+                
+                currentPlayerDisplay.textContent = currentPlayer;
+                currentPlayerDisplay.style.color = currentPlayer === 'X' ? 'var(--secondary-color)' : 'var(--accent-color)';
+                
+                cells.forEach(cell => {
+                    cell.textContent = '';
+                    cell.classList.remove('x', 'o', 'winning-cell');
+                });
+                
+                resultModal.style.display = 'none';
+            }
+            
+            // Handle cell click
+            function handleCellClick(e) {
+                const clickedCell = e.target;
+                const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
+                
+                // If cell already filled or game not active, ignore click
+                if (boardState[clickedCellIndex] !== '' || !gameActive) return;
+                
+                // Update board state and UI
+                boardState[clickedCellIndex] = currentPlayer;
+                clickedCell.textContent = currentPlayer;
+                clickedCell.classList.add(currentPlayer.toLowerCase());
+                
+                // Check for win or draw
+                checkResult();
+                
+                // If playing vs AI and game is still active, make AI move
+                if (vsAI && gameActive && currentPlayer === 'O') {
+                    setTimeout(makeAIMove, 500);
+                }
+            }
+            
+            // Check game result
+            function checkResult() {
+                let roundWon = false;
+                
+                // Check all winning conditions
+                for (let i = 0; i < winningConditions.length; i++) {
+                    const [a, b, c] = winningConditions[i];
+                    
+                    if (boardState[a] === '' || boardState[b] === '' || boardState[c] === '') continue;
+                    
+                    if (boardState[a] === boardState[b] && boardState[b] === boardState[c]) {
+                        roundWon = true;
+                        
+                        // Highlight winning cells
+                        cells[a].classList.add('winning-cell');
+                        cells[b].classList.add('winning-cell');
+                        cells[c].classList.add('winning-cell');
+                        break;
+                    }
+                }
+            
+                // If won, update scores and show result
+                if (roundWon) {
+                    scores[currentPlayer]++;
+                    updateScores();
+                    endGame(`${currentPlayer} Wins!`);
+                    return;
+                }
+                
+                // If draw, update scores and show result
+                if (!boardState.includes('')) {
+                    scores.ties++;
+                    updateScores();
+                    endGame("It's a Draw!");
+                    return;
+                }
+                
+                // Switch player
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                currentPlayerDisplay.textContent = currentPlayer;
+                currentPlayerDisplay.style.color = currentPlayer === 'X' ? 'var(--secondary-color)' : 'var(--accent-color)';
+            }
+            
+            // AI move logic
+            function makeAIMove() {
+                if (!gameActive) return;
+                
+                // Simple AI: first try to win, then block, then random
+                let bestMove = findWinningMove('O') || findWinningMove('X') || findRandomMove();
+                
+                if (bestMove !== null) {
+                    boardState[bestMove] = 'O';
+                    cells[bestMove].textContent = 'O';
+                    cells[bestMove].classList.add('o');
+                    
+                    checkResult();
+                }
+            }
+            
+            // Find a winning move for the given player
+            function findWinningMove(player) {
+                for (let i = 0; i < winningConditions.length; i++) {
+                    const [a, b, c] = winningConditions[i];
+                    
+                    // Check if two in a row with one empty
+                    if (boardState[a] === player && boardState[b] === player && boardState[c] === '') return c;
+                    if (boardState[a] === player && boardState[c] === player && boardState[b] === '') return b;
+                    if (boardState[b] === player && boardState[c] === player && boardState[a] === '') return a;
+                }
+                return null;
+            }
+            
+            // Find a random available move
+            function findRandomMove() {
+                const availableMoves = [];
+                for (let i = 0; i < boardState.length; i++) {
+                    if (boardState[i] === '') availableMoves.push(i);
+                }
+                return availableMoves.length > 0 ? availableMoves[Math.floor(Math.random() * availableMoves.length)] : null;
+            }
+            
+            // End the game
+            function endGame(message) {
+                gameActive = false;
+                resultText.textContent = message;
+                resultModal.style.display = 'flex';
+            }
+            
+            // Update score display
+            function updateScores() {
+                playerXScore.textContent = `X: ${scores.X}`;
+                playerOScore.textContent = `O: ${scores.O}`;
+                tiesScore.textContent = `Ties: ${scores.ties}`;
+            }
+            
+            // Reset scores and start new game
+            function resetScores() {
+                scores = { X: 0, O: 0, ties: 0 };
+                updateScores();
+                initGame();
+            }
+            
+            // Event listeners
+            cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+            resetBtn.addEventListener('click', resetScores);
+            newGameBtn.addEventListener('click', initGame);
+            playAgainBtn.addEventListener('click', initGame);
+            
+            // AI toggle
+            aiToggle.addEventListener('change', function() {
+                vsAI = this.checked;
+                resetScores();
+            });
+            
+            // Initialize the game
+            initGame();
+        });
+    </script>
+</body>
+</html>
