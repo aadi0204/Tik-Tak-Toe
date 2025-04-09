@@ -6,9 +6,10 @@
     <meta name="description" content="Play Tic Tac Toe online - challenge friends or test your skills against our AI at different difficulty levels">
     <meta name="keywords" content="tic tac toe, noughts and crosses, XOXO game, play online, multiplayer game, AI game">
     <title>Tic Tac Toe | Play Online Against Friends or Computer</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Fredoka+One&family=Orbitron:wght@500&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #6c5ce7;
@@ -24,6 +25,13 @@
             --border-radius: 15px;
             --box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            
+            /* Dark mode variables */
+            --dark-bg: #1a1a2e;
+            --dark-text: #e6e6e6;
+            --dark-primary: #8a2be2;
+            --dark-secondary: #6a5acd;
+            --dark-card: #16213e;
         }
 
         * {
@@ -40,6 +48,12 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            transition: var(--transition);
+        }
+
+        body.dark-mode {
+            background: var(--dark-bg);
+            color: var(--dark-text);
         }
 
         header {
@@ -50,18 +64,51 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             position: relative;
             overflow: hidden;
+            transition: var(--transition);
         }
 
-        header::before {
-            content: "";
+        body.dark-mode header {
+            background-color: var(--dark-primary);
+        }
+
+        .dark-mode-toggle {
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
-            transform: rotate(30deg);
-            pointer-events: none;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .dark-mode-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .dark-mode-toggle i {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .offline-status {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+            display: none;
+        }
+
+        body.dark-mode .offline-status {
+            background: rgba(0,0,0,0.2);
         }
 
         h1 {
@@ -71,6 +118,12 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
             position: relative;
             letter-spacing: 1px;
+            transition: var(--transition);
+        }
+
+        body.dark-mode h1 {
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
         }
 
         main {
@@ -89,6 +142,11 @@
             padding: 1.2rem;
             font-size: 0.9rem;
             margin-top: auto;
+            transition: var(--transition);
+        }
+
+        body.dark-mode footer {
+            background-color: #0f0f1a;
         }
 
         .game-screen {
@@ -107,6 +165,12 @@
             transition: var(--transition);
         }
 
+        body.dark-mode .game-screen {
+            background-color: var(--dark-card);
+            color: var(--dark-text);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
         .game-screen::before {
             content: "";
             position: absolute;
@@ -115,6 +179,11 @@
             right: 0;
             height: 5px;
             background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--success-color));
+            transition: var(--transition);
+        }
+
+        body.dark-mode .game-screen::before {
+            background: linear-gradient(90deg, var(--dark-primary), #9c27b0, #673ab7);
         }
 
         .game-screen h2 {
@@ -124,6 +193,11 @@
             font-size: 1.8rem;
             position: relative;
             display: inline-block;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .game-screen h2 {
+            color: var(--dark-primary);
         }
 
         .game-screen h2::after {
@@ -136,6 +210,11 @@
             height: 3px;
             background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
             border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .game-screen h2::after {
+            background: linear-gradient(90deg, var(--dark-primary), #9c27b0);
         }
 
         .btn {
@@ -156,6 +235,11 @@
             overflow: hidden;
         }
 
+        body.dark-mode .btn {
+            background: linear-gradient(135deg, var(--dark-primary), var(--dark-secondary));
+            box-shadow: 0 4px 8px rgba(138, 43, 226, 0.3);
+        }
+
         .btn::before {
             content: "";
             position: absolute;
@@ -172,6 +256,10 @@
             box-shadow: 0 6px 12px rgba(108, 92, 231, 0.4);
         }
 
+        body.dark-mode .btn:hover {
+            box-shadow: 0 6px 12px rgba(138, 43, 226, 0.4);
+        }
+
         .btn:hover::before {
             left: 100%;
         }
@@ -183,9 +271,19 @@
             box-shadow: none;
         }
 
+        body.dark-mode .btn-secondary {
+            background: var(--dark-card);
+            color: var(--dark-primary);
+            border-color: var(--dark-primary);
+        }
+
         .btn-secondary:hover {
             background: var(--primary-color);
             color: white;
+        }
+
+        body.dark-mode .btn-secondary:hover {
+            background: var(--dark-primary);
         }
 
         .btn-group {
@@ -207,6 +305,12 @@
             border-radius: var(--border-radius);
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             position: relative;
+            transition: var(--transition);
+        }
+
+        body.dark-mode #game-board {
+            background-color: var(--dark-card);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         #game-board::before {
@@ -221,6 +325,11 @@
             background-size: 20px 20px;
             opacity: 0.3;
             pointer-events: none;
+        }
+
+        body.dark-mode #game-board::before {
+            background: linear-gradient(45deg, transparent 48%, rgba(138, 43, 226, 0.1) 49%, rgba(138, 43, 226, 0.1) 51%, transparent 52%),
+                        linear-gradient(-45deg, transparent 48%, rgba(138, 43, 226, 0.1) 49%, rgba(138, 43, 226, 0.1) 51%, transparent 52%);
         }
 
         .cell {
@@ -241,10 +350,19 @@
             box-shadow: 0 3px 6px rgba(0,0,0,0.05);
         }
 
+        body.dark-mode .cell {
+            background-color: #1e1e3f;
+            border-color: var(--dark-secondary);
+        }
+
         .cell:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 10px rgba(0,0,0,0.1);
             border-color: var(--primary-color);
+        }
+
+        body.dark-mode .cell:hover {
+            border-color: var(--dark-primary);
         }
 
         .cell.x {
@@ -275,6 +393,11 @@
             font-weight: 600;
             color: var(--primary-color);
             font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .form-group label {
+            color: var(--dark-primary);
         }
 
         .form-group input {
@@ -285,10 +408,21 @@
             transition: var(--transition);
         }
 
+        body.dark-mode .form-group input {
+            background-color: #2a2a4a;
+            border-color: #3d3d5a;
+            color: var(--dark-text);
+        }
+
         .form-group input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+        }
+
+        body.dark-mode .form-group input:focus {
+            border-color: var(--dark-primary);
+            box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
         }
 
         .game-status {
@@ -301,6 +435,12 @@
             background-color: rgba(162, 155, 254, 0.1);
             border-radius: var(--border-radius);
             display: inline-block;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .game-status {
+            color: var(--dark-primary);
+            background-color: rgba(106, 90, 205, 0.1);
         }
 
         .difficulty-selector {
@@ -330,6 +470,10 @@
             border-radius: var(--border-radius);
             z-index: 10;
             animation: fadeIn 0.3s ease-out;
+        }
+
+        body.dark-mode .win-overlay {
+            background-color: rgba(15, 15, 26, 0.95);
         }
 
         @keyframes fadeIn {
@@ -384,6 +528,12 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .game-history {
+            background-color: var(--dark-card);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
         .game-history::before {
@@ -394,6 +544,11 @@
             right: 0;
             height: 5px;
             background: linear-gradient(90deg, var(--success-color), var(--warning-color), var(--danger-color));
+            transition: var(--transition);
+        }
+
+        body.dark-mode .game-history::before {
+            background: linear-gradient(90deg, #00b894, #fdcb6e, #ff7675);
         }
 
         .game-history h3 {
@@ -402,6 +557,11 @@
             font-weight: 700;
             position: relative;
             display: inline-block;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .game-history h3 {
+            color: var(--dark-primary);
         }
 
         .game-history h3::after {
@@ -414,6 +574,11 @@
             height: 2px;
             background: var(--primary-color);
             border-radius: 2px;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .game-history h3::after {
+            background: var(--dark-primary);
         }
 
         .history-list {
@@ -437,10 +602,18 @@
             gap: 0.5rem;
         }
 
+        body.dark-mode .history-item {
+            background-color: #2a2a4a;
+        }
+
         .history-item.win {
             background-color: rgba(0, 184, 148, 0.1);
             color: var(--success-color);
             border: 1px solid rgba(0, 184, 148, 0.3);
+        }
+
+        body.dark-mode .history-item.win {
+            background-color: rgba(0, 184, 148, 0.2);
         }
 
         .history-item.lose {
@@ -449,10 +622,18 @@
             border: 1px solid rgba(255, 118, 117, 0.3);
         }
 
+        body.dark-mode .history-item.lose {
+            background-color: rgba(255, 118, 117, 0.2);
+        }
+
         .history-item.draw {
             background-color: rgba(253, 203, 110, 0.1);
             color: var(--warning-color);
             border: 1px solid rgba(253, 203, 110, 0.3);
+        }
+
+        body.dark-mode .history-item.draw {
+            background-color: rgba(253, 203, 110, 0.2);
         }
 
         .history-item::before {
@@ -555,10 +736,15 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <header>
+        <div class="offline-status" id="offlineStatus">Offline Mode</div>
         <h1>Tic Tac Toe</h1>
+        <button class="dark-mode-toggle" id="darkModeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
     </header>
     
     <main id="game-container">
@@ -569,14 +755,111 @@
         <p>© <span id="year"></span> Tic Tac Toe Online. All rights reserved.</p>
     </footer>
 
+    <!-- Embedded sound files as data URIs for offline support -->
+    <audio id="clickSound" preload="auto">
+        <source src="data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" type="audio/mpeg">
+    </audio>
+    <audio id="winSound" preload="auto">
+        <source src="data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" type="audio/mpeg">
+    </audio>
+    <audio id="drawSound" preload="auto">
+        <source src="data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" type="audio/mpeg">
+    </audio>
+
     <script>
+        // Register Service Worker for offline support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        // Create manifest.json dynamically
+        const manifest = {
+            "name": "Tic Tac Toe",
+            "short_name": "TicTacToe",
+            "start_url": ".",
+            "display": "standalone",
+            "background_color": "#6c5ce7",
+            "description": "Play Tic Tac Toe offline",
+            "icons": [{
+                "src": "icon-192.png",
+                "sizes": "192x192",
+                "type": "image/png"
+            }, {
+                "src": "icon-512.png",
+                "sizes": "512x512",
+                "type": "image/png"
+            }]
+        };
+
+        const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blob);
+        document.querySelector('link[rel="manifest"]').href = manifestURL;
+
         document.addEventListener('DOMContentLoaded', function() {
             // Set current year in footer
             document.getElementById('year').textContent = new Date().getFullYear();
             
+            // Check online status
+            const offlineStatus = document.getElementById('offlineStatus');
+            function updateOnlineStatus() {
+                if (navigator.onLine) {
+                    offlineStatus.style.display = 'none';
+                } else {
+                    offlineStatus.style.display = 'block';
+                }
+            }
+            
+            window.addEventListener('online', updateOnlineStatus);
+            window.addEventListener('offline', updateOnlineStatus);
+            updateOnlineStatus();
+            
             // Game history
             let gameHistory = [];
             let currentGameConfig = null;
+            
+            // Dark mode toggle
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const darkModeIcon = darkModeToggle.querySelector('i');
+            
+            // Check for saved dark mode preference
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+                darkModeIcon.classList.replace('fa-moon', 'fa-sun');
+            }
+            
+            darkModeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                if (document.body.classList.contains('dark-mode')) {
+                    darkModeIcon.classList.replace('fa-moon', 'fa-sun');
+                    localStorage.setItem('darkMode', 'true');
+                } else {
+                    darkModeIcon.classList.replace('fa-sun', 'fa-moon');
+                    localStorage.setItem('darkMode', 'false');
+                }
+            });
+            
+            // Sound effects
+            const clickSound = document.getElementById('clickSound');
+            const winSound = document.getElementById('winSound');
+            const drawSound = document.getElementById('drawSound');
+            
+            function playSound(sound) {
+                try {
+                    sound.currentTime = 0;
+                    sound.play().catch(e => console.log("Sound playback prevented:", e));
+                } catch (e) {
+                    console.log("Sound error:", e);
+                }
+            }
             
             // Initialize game
             const gameContainer = document.getElementById('game-container');
@@ -597,8 +880,14 @@
                     </div>
                 `;
                 
-                document.getElementById('play-computer').addEventListener('click', showComputerDifficultyScreen);
-                document.getElementById('play-friend').addEventListener('click', showFriendSetupScreen);
+                document.getElementById('play-computer').addEventListener('click', () => {
+                    playSound(clickSound);
+                    showComputerDifficultyScreen();
+                });
+                document.getElementById('play-friend').addEventListener('click', () => {
+                    playSound(clickSound);
+                    showFriendSetupScreen();
+                });
             }
             
             function showComputerDifficultyScreen() {
@@ -615,10 +904,22 @@
                     </div>
                 `;
                 
-                document.getElementById('easy-btn').addEventListener('click', () => startComputerGame('easy'));
-                document.getElementById('medium-btn').addEventListener('click', () => startComputerGame('medium'));
-                document.getElementById('hard-btn').addEventListener('click', () => startComputerGame('hard'));
-                document.getElementById('back-btn').addEventListener('click', showHomeScreen);
+                document.getElementById('easy-btn').addEventListener('click', () => {
+                    playSound(clickSound);
+                    startComputerGame('easy');
+                });
+                document.getElementById('medium-btn').addEventListener('click', () => {
+                    playSound(clickSound);
+                    startComputerGame('medium');
+                });
+                document.getElementById('hard-btn').addEventListener('click', () => {
+                    playSound(clickSound);
+                    startComputerGame('hard');
+                });
+                document.getElementById('back-btn').addEventListener('click', () => {
+                    playSound(clickSound);
+                    showHomeScreen();
+                });
             }
             
             function showFriendSetupScreen() {
@@ -643,6 +944,7 @@
                 
                 document.getElementById('player-form').addEventListener('submit', function(e) {
                     e.preventDefault();
+                    playSound(clickSound);
                     const player1 = document.getElementById('player1').value.trim();
                     const player2 = document.getElementById('player2').value.trim();
                     
@@ -651,7 +953,10 @@
                     }
                 });
                 
-                document.getElementById('back-btn').addEventListener('click', showHomeScreen);
+                document.getElementById('back-btn').addEventListener('click', () => {
+                    playSound(clickSound);
+                    showHomeScreen();
+                });
             }
             
             function startComputerGame(difficulty) {
@@ -732,6 +1037,7 @@
                 }
                 
                 restartBtn.addEventListener('click', () => {
+                    playSound(clickSound);
                     if (config.vsComputer) {
                         startComputerGame(config.computerDifficulty);
                     } else {
@@ -739,12 +1045,21 @@
                     }
                 });
                 
-                homeBtn.addEventListener('click', showHomeScreen);
+                homeBtn.addEventListener('click', () => {
+                    playSound(clickSound);
+                    showHomeScreen();
+                });
                 
                 function handleCellClick(e) {
                     const index = parseInt(e.target.getAttribute('data-index'));
                     
                     if (board[index] !== '' || !gameActive) return;
+                    
+                    // Play click sound and vibrate
+                    playSound(clickSound);
+                    if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                    }
                     
                     // Human player's move
                     updateCell(e.target, index);
@@ -824,6 +1139,12 @@
                             date: new Date()
                         });
                         
+                        // Play win sound and vibrate
+                        playSound(winSound);
+                        if (navigator.vibrate) {
+                            navigator.vibrate([100, 50, 100]);
+                        }
+                        
                         showWinOverlay(currentPlayer);
                         gameActive = false;
                         createConfetti(isComputerWin ? 'lose' : 'win');
@@ -837,6 +1158,12 @@
                             symbol: '',
                             date: new Date()
                         });
+                        
+                        // Play draw sound and vibrate
+                        playSound(drawSound);
+                        if (navigator.vibrate) {
+                            navigator.vibrate(200);
+                        }
                         
                         showDrawOverlay();
                         gameActive = false;
@@ -861,6 +1188,7 @@
                     gameScreen.appendChild(overlay);
                     
                     document.getElementById('ok-btn').addEventListener('click', () => {
+                        playSound(clickSound);
                         overlay.remove();
                         updateHistoryDisplay();
                         // Auto-restart the game
@@ -883,6 +1211,7 @@
                     gameScreen.appendChild(overlay);
                     
                     document.getElementById('ok-btn').addEventListener('click', () => {
+                        playSound(clickSound);
                         overlay.remove();
                         updateHistoryDisplay();
                         // Auto-restart the game
@@ -1051,6 +1380,22 @@
             `;
             document.head.appendChild(style);
         });
+    </script>
+
+    <script>
+        // Service Worker registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js').then(
+                    function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    },
+                    function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    }
+                );
+            });
+        }
     </script>
 </body>
 </html>
